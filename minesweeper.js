@@ -6,6 +6,7 @@ var board = {cells: [
       row: 0,
       col: 0,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -13,6 +14,7 @@ var board = {cells: [
       row: 0,
       col: 1,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -20,6 +22,7 @@ var board = {cells: [
       row: 0,
       col: 2,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -27,6 +30,7 @@ var board = {cells: [
       row: 1,
       col: 0,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -34,6 +38,7 @@ var board = {cells: [
       row: 1,
       col: 1,
       isMine: true,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -41,6 +46,7 @@ var board = {cells: [
       row: 1,
       col: 2,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -48,6 +54,7 @@ var board = {cells: [
       row: 2,
       col: 0,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -55,6 +62,7 @@ var board = {cells: [
       row: 2,
       col: 1,
       isMine: false,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     },
@@ -62,6 +70,7 @@ var board = {cells: [
       row: 2,
       col: 2,
       isMine: true,
+      isMarked: false,
       hidden: true,
       surroundingMines: 0
     }
@@ -69,6 +78,8 @@ var board = {cells: [
 };
 
 function startGame () {
+  document.addEventListener("click", checkForWin);
+  document.addEventListener("contextmenu", checkForWin);
   for (let i = 0; i < board.cells.length; i++) {
     board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
   }
@@ -80,7 +91,34 @@ function startGame () {
 //
 // 1. Are all of the cells that are NOT mines visible?
 // 2. Are all of the mines marked?
+
 function checkForWin () {
+  let bombsNumber = 0;
+  let markedBombs = 0;
+  let notBombsNumber = 0;
+
+  for (let i = 0; i < board.cells.length; i++) {
+    if (board.cells[i].isMine === true) {
+      bombsNumber += 1;
+    }
+
+    if (board.cells[i].isMine === true && board.cells[i].isMarked === true) {
+      markedBombs += 1;
+    }
+
+    if (board.cells[i].isMine === false && board.cells[i].hidden === false && board.cells[i].isMarked === false) {
+      notBombsNumber += 1;
+    }
+
+    if (board.cells[i].isMine === true && board.cells[i].hidden === false) {
+      lib.displayMessage("Boom!");
+      break;
+    }
+  }
+
+  if (bombsNumber === markedBombs && notBombsNumber === board.cells.length - bombsNumber) {
+    lib.displayMessage("You win!");
+  }
 
   // You can use this function call to declare a winner (once you've
   // detected that they've won, that is!)
